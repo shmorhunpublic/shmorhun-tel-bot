@@ -1,13 +1,16 @@
-import * as dotenv from "dotenv";
-import TelegramBot from "node-telegram-bot-api";
-import { Message, CallbackQuery } from "node-telegram-bot-api";
+import dotenv from "dotenv";
+import TelegramBot, { Message, CallbackQuery } from "node-telegram-bot-api";
+
+import { ROLE } from "./utils/enums";
+import { MESSAGES } from "./utils/messages";
+import { CALLBACKS } from "./utils/constants";
 
 dotenv.config();
 
 const token = process.env.TELEGRAM_BOT_TOKEN;
 
 if (!token) {
-  console.log("Bot token is not specified in .env file");
+  console.log(MESSAGES.errors.env.token);
   process.exit(1);
 }
 
@@ -18,29 +21,29 @@ bot.onText(/\/start/, (msg: Message) => {
   const opts = {
     reply_markup: {
       inline_keyboard: [
-        [{ text: "DevOps", callback_data: "devops" }],
-        [{ text: "Backend", callback_data: "backend" }],
-        [{ text: "Frontend", callback_data: "frontend" }],
+        [{ text: ROLE.DEVOPS, callback_data: CALLBACKS.data.devops }],
+        [{ text: ROLE.BACKEND, callback_data: CALLBACKS.data.backend }],
+        [{ text: ROLE.FRONTEND, callback_data: CALLBACKS.data.frontend }],
       ],
     },
   };
 
-  bot.sendMessage(chatId, "Please choose a job category:", opts);
+  bot.sendMessage(chatId, MESSAGES.choose.role, opts);
 });
 
 bot.on("callback_query", (callbackQuery: CallbackQuery) => {
   const message = callbackQuery.message!;
   const data = callbackQuery.data;
 
-  bot.sendMessage(message.chat.id, `Selected option: ${data}`);
+  bot.sendMessage(message.chat.id, `${MESSAGES.choose.platform} ${data}`);
 });
 
 bot.on("polling_error", (error) => {
-  console.log(`Bot is not running due to polling error: ${error.message}`);
+  console.log(`${MESSAGES.errors.running.polling} ${error.message}`);
 });
 
 bot.on("webhook_error", (error) => {
-  console.log(`Bot is not running due to webhook error: ${error.message}`);
+  console.log(`${MESSAGES.errors.running.webhook} ${error.message}`);
 });
 
-console.log("Bot is successfully running...");
+console.log(MESSAGES.success.running);
