@@ -18,9 +18,9 @@ bot.onText(/\/start/, (msg: Message) => {
   const opts = {
     reply_markup: {
       inline_keyboard: [
-        [{ text: "DevOps 🛠", callback_data: "devops" }],
-        [{ text: "Backend 💻", callback_data: "backend" }],
-        [{ text: "Frontend 🖌", callback_data: "frontend" }],
+        [{ text: "DevOps", callback_data: "devops" }],
+        [{ text: "Backend", callback_data: "backend" }],
+        [{ text: "Frontend", callback_data: "frontend" }],
       ],
     },
   };
@@ -34,3 +34,13 @@ bot.on("callback_query", (callbackQuery: CallbackQuery) => {
 
   bot.sendMessage(message.chat.id, `Selected option: ${data}`);
 });
+
+bot.on("polling_error", (error) => {
+  console.log(`Bot is not running due to polling error: ${error.message}`);
+});
+
+bot.on("webhook_error", (error) => {
+  console.log(`Bot is not running due to webhook error: ${error.message}`);
+});
+
+console.log("Bot is successfully running...");
