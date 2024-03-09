@@ -1,9 +1,12 @@
 import dotenv from "dotenv";
 import TelegramBot, { Message, CallbackQuery } from "node-telegram-bot-api";
-
+import { callbackQueryHandler } from "./handlers/callback.query.handlers";
+import { startHandler } from "./handlers/commands.handlers";
+import { errorHandler } from "./handlers/error.handler";
 import { MESSAGES } from "./utils/messages";
 import { CALLBACKS, isLevel, isPlatform, isRole } from "./utils/constants";
 import { ROLE_BUTTONS, PLATFORM_BUTTONS } from "./utils/buttons";
+import { UserState } from "./types";
 
 dotenv.config();
 
@@ -16,15 +19,9 @@ if (!token) {
 
 const bot = new TelegramBot(token, { polling: true });
 
-const userStates = new Map();
+const userStates = new Map<number, UserState>();
 
-bot.onText(/\/start/, (msg: Message) => {
-  const chatId = msg.chat.id;
-  const opts = ROLE_BUTTONS;
-
-  userStates.set(chatId, { role: "", level: "", platform: "" });
-  bot.sendMessage(chatId, MESSAGES.choose.role, opts);
-});
+bot.onText(/\/start/, startHandler(bot));
 
 bot.on("callback_query", async (callbackQuery: CallbackQuery) => {
   const message = callbackQuery.message!;
@@ -52,8 +49,7 @@ bot.on("callback_query", async (callbackQuery: CallbackQuery) => {
       !isPlatform(data) &&
       data !== CALLBACKS.data.back.toRoles
     ) {
-      const opts = PLATFORM_BUTTONS;
-      await bot.sendMessage(chatId, MESSAGES.choose.platform, opts);
+      await bot.sendMessage(chatId, MESSAGES.choose.platform, PLATFORM_BUTTONS);
     }
 
     if (isPlatform(data)) {
@@ -70,20 +66,15 @@ bot.on("callback_query", async (callbackQuery: CallbackQuery) => {
       userState.role = "";
       userState.level = "";
       userStates.set(chatId, userState);
-      const opts = ROLE_BUTTONS;
-      await bot.sendMessage(chatId, MESSAGES.choose.role, opts);
+      await bot.sendMessage(chatId, MESSAGES.choose.role, ROLE_BUTTONS);
       return;
     }
   }
   console.log(userStates);
 });
 
-bot.on("polling_error", (error) => {
-  console.log(`${MESSAGES.errors.running.polling} ${error.message}`);
-});
-
-bot.on("webhook_error", (error) => {
-  console.log(`${MESSAGES.errors.running.webhook} ${error.message}`);
-});
+// bot.on("callback_query", callbackQueryHandler(bot));
+bot.on("polling_error", errorHandler("polling"));
+bot.on("webhook_error", errorHandler("webhook"));
 
 console.log(MESSAGES.success.running);
