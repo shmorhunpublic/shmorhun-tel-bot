@@ -1,7 +1,9 @@
 export const MESSAGES = {
   choose: {
-    role: "Please choose a role:",
-    platform: "Please choose platform:",
+    role: "Please choose a developer role:",
+    level: "Please choose a experience level:",
+    platform: (role: string, level: string) =>
+      `Please choose platform for ${level} ${role} role`,
   },
   back: { toRoles: "Back to roles" },
   success: {

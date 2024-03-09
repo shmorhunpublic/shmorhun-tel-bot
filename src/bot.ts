@@ -1,11 +1,11 @@
 import dotenv from "dotenv";
-import TelegramBot, { Message, CallbackQuery } from "node-telegram-bot-api";
+import TelegramBot, { CallbackQuery } from "node-telegram-bot-api";
 import { callbackQueryHandler } from "./handlers/callback.query.handlers";
 import { startHandler } from "./handlers/commands.handlers";
 import { errorHandler } from "./handlers/error.handler";
 import { MESSAGES } from "./utils/messages";
 import { CALLBACKS, isLevel, isPlatform, isRole } from "./utils/constants";
-import { ROLE_BUTTONS, PLATFORM_BUTTONS } from "./utils/buttons";
+import { ROLE_BUTTONS, PLATFORM_BUTTONS, LEVEL_BUTTONS } from "./utils/buttons";
 import { UserState } from "./types";
 
 dotenv.config();
@@ -32,10 +32,14 @@ bot.on("callback_query", async (callbackQuery: CallbackQuery) => {
     level: "",
     platform: "",
   };
-  if (data) {
+  if (data && userState.role !== data && userState.level !== data) {
+    console.log(data, typeof data);
+
     if (isRole(data)) {
       userState.role = data;
       userStates.set(chatId, userState);
+      !userState.level &&
+        (await bot.sendMessage(chatId, MESSAGES.choose.level, LEVEL_BUTTONS));
     }
 
     if (isLevel(data)) {
@@ -49,7 +53,11 @@ bot.on("callback_query", async (callbackQuery: CallbackQuery) => {
       !isPlatform(data) &&
       data !== CALLBACKS.data.back.toRoles
     ) {
-      await bot.sendMessage(chatId, MESSAGES.choose.platform, PLATFORM_BUTTONS);
+      await bot.sendMessage(
+        chatId,
+        MESSAGES.choose.platform(userState.role, userState.level),
+        PLATFORM_BUTTONS
+      );
     }
 
     if (isPlatform(data)) {

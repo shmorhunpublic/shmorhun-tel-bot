@@ -59,7 +59,6 @@ export const callbackQueryHandler =
         await bot.sendMessage(chatId, MESSAGES.choose.role, ROLE_BUTTONS);
         return;
       }
-      // let userState = getUserState(chatId);
     }
     console.log(getUserState(chatId));
   };

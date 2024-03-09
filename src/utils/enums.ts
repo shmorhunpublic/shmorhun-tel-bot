@@ -20,5 +20,5 @@ export enum PLATFORM {
   WORK = "work.ua",
   ROBOTA = "robota.ua",
   GLASSDOOR = "glassdoor.com",
-  INDEED = "indeed",
+  INDEED = "indeed.com",
 }

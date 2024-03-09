@@ -16,29 +16,27 @@ const BUTTONS_PARAMS = {
     { text: LEVEL.SENIOR, callback: CALLBACKS.data.level.senior },
   ],
   platform: [
-    { text: PLATFORM.DJINNI, callback: CALLBACKS.data.platform.djinni },
-    { text: PLATFORM.DOU, callback: CALLBACKS.data.platform.dou },
-    { text: PLATFORM.WORK, callback: CALLBACKS.data.platform.work },
-    { text: PLATFORM.ROBOTA, callback: CALLBACKS.data.platform.robota },
-    {
-      text: PLATFORM.GLASSDOOR,
-      callback: CALLBACKS.data.platform.glassdoor,
-    },
-    { text: PLATFORM.INDEED, callback: CALLBACKS.data.platform.indeed },
-    { text: MESSAGES.back.toRoles, callback: CALLBACKS.data.back.toRoles },
+    [
+      { text: PLATFORM.DJINNI, callback: CALLBACKS.data.platform.djinni },
+      { text: PLATFORM.DOU, callback: CALLBACKS.data.platform.dou },
+      { text: PLATFORM.WORK, callback: CALLBACKS.data.platform.work },
+    ],
+    [
+      { text: PLATFORM.ROBOTA, callback: CALLBACKS.data.platform.robota },
+      {
+        text: PLATFORM.GLASSDOOR,
+        callback: CALLBACKS.data.platform.glassdoor,
+      },
+      { text: PLATFORM.INDEED, callback: CALLBACKS.data.platform.indeed },
+    ],
+    [{ text: MESSAGES.back.toRoles, callback: CALLBACKS.data.back.toRoles }],
   ],
 };
 
 export const START_BUTTON = createButtons(BUTTONS_PARAMS.start);
 
-export const ROLE_BUTTONS = createButtonsRows([
-  BUTTONS_PARAMS.role,
-  BUTTONS_PARAMS.level,
-]);
+export const ROLE_BUTTONS = createButtonsRows([BUTTONS_PARAMS.role]);
 
-export const PLATFORM_BUTTONS = createButtons(BUTTONS_PARAMS.platform);
+export const LEVEL_BUTTONS = createButtonsRows([BUTTONS_PARAMS.level]);
 
-export const BACK_BUTTON = {
-  text: "Back",
-  callback_data: CALLBACKS.data.back.toRoles,
-};
+export const PLATFORM_BUTTONS = createButtonsRows(BUTTONS_PARAMS.platform);
