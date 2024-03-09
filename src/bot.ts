@@ -1,12 +1,14 @@
 import dotenv from "dotenv";
 import TelegramBot, { CallbackQuery } from "node-telegram-bot-api";
-import { callbackQueryHandler } from "./handlers/callback.query.handlers";
+// import { callbackQueryHandler } from "./handlers/callback.query.handlers";
 import { startHandler } from "./handlers/commands.handlers";
 import { errorHandler } from "./handlers/error.handler";
 import { MESSAGES } from "./utils/messages";
 import { CALLBACKS, isLevel, isPlatform, isRole } from "./utils/constants";
 import { ROLE_BUTTONS, PLATFORM_BUTTONS, LEVEL_BUTTONS } from "./utils/buttons";
 import { UserState } from "./types";
+import { PLATFORM_ROUTES } from "./utils/enums";
+import { platformRouter } from "./router/platforms.router";
 
 dotenv.config();
 
@@ -50,7 +52,7 @@ bot.on("callback_query", async (callbackQuery: CallbackQuery) => {
     if (
       userState.role &&
       userState.level &&
-      !isPlatform(data) &&
+      !isPlatform(data as PLATFORM_ROUTES) &&
       data !== CALLBACKS.data.back.toRoles
     ) {
       await bot.sendMessage(
@@ -60,14 +62,27 @@ bot.on("callback_query", async (callbackQuery: CallbackQuery) => {
       );
     }
 
-    if (isPlatform(data)) {
+    if (
+      userState.role &&
+      userState.level &&
+      isPlatform(data as PLATFORM_ROUTES)
+    ) {
       userState.platform = data;
       userStates.set(chatId, userState);
 
-      await bot.sendMessage(
-        chatId,
-        `Role: ${userState.role}, Level: ${userState.level}, Platform: ${userState.platform}`
-      );
+      const parseFunction = platformRouter[userState.platform];
+      if (parseFunction) {
+        const vacanciesMessage = await parseFunction(
+          userState.role,
+          userState.level
+        );
+        await bot.sendMessage(chatId, vacanciesMessage);
+      } else {
+        await bot.sendMessage(
+          chatId,
+          "Parsing for this platform is not yet supported."
+        );
+      }
     }
 
     if (data === CALLBACKS.data.back.toRoles) {

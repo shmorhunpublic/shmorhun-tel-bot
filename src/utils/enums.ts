@@ -22,3 +22,12 @@ export enum PLATFORM {
   GLASSDOOR = "glassdoor.com",
   INDEED = "indeed.com",
 }
+
+export enum PLATFORM_ROUTES {
+  DJINNI = "djinni",
+  DOU = "dou",
+  WORK = "work",
+  ROBOTA = "robota",
+  GLASSDOOR = "glassdoor",
+  INDEED = "indeed",
+}

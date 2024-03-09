@@ -1,14 +1,16 @@
+import { PLATFORM_ROUTES } from "./enums";
+
 export const CALLBACKS = {
   data: {
     start: { index: "/start" },
     role: { devops: "devops", frontend: "frontend", backend: "backend" },
     platform: {
-      djinni: "djinni",
-      dou: "dou",
-      work: "work",
-      robota: "robota",
-      glassdoor: "glassdoor",
-      indeed: "indeed",
+      djinni: PLATFORM_ROUTES.DJINNI,
+      dou: PLATFORM_ROUTES.DOU,
+      work: PLATFORM_ROUTES.WORK,
+      robota: PLATFORM_ROUTES.ROBOTA,
+      glassdoor: PLATFORM_ROUTES.GLASSDOOR,
+      indeed: PLATFORM_ROUTES.INDEED,
     },
     back: {
       toRoles: "backToRoles",
@@ -31,5 +33,5 @@ export const isRole = (role: string): boolean =>
 export const isLevel = (level: string): boolean =>
   Object.values(LEVEL_VALUES).includes(level);
 
-export const isPlatform = (platform: string): boolean =>
+export const isPlatform = (platform: PLATFORM_ROUTES): boolean =>
   Object.values(PLATFORM_VALUES).includes(platform);

@@ -5,3 +5,9 @@ export type UserState = {
   level?: string;
   platform?: string;
 };
+
+type ParseFunction = (role: string, level: string) => Promise<string>;
+
+export interface PlatformRouter {
+  [key: string]: ParseFunction | null;
+}
