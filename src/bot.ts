@@ -10,6 +10,8 @@ dotenv.config();
 const token = process.env.TELEGRAM_BOT_TOKEN;
 
 const choices = new Map<number, { role?: string; platform?: string }>();
+let role = "";
+// let platform = "";
 
 if (!token) {
   console.log(MESSAGES.errors.env.token);
@@ -20,7 +22,10 @@ const bot = new TelegramBot(token, { polling: true });
 
 bot.onText(/\/start/, (msg: Message) => {
   const chatId = msg.chat.id;
+
+  console.log(chatId);
   choices.set(chatId, { role: undefined, platform: undefined });
+
   const opts = ROLE_BUTTONS;
   bot.sendMessage(chatId, MESSAGES.choose.role, opts);
 });
@@ -29,15 +34,22 @@ bot.on("callback_query", async (callbackQuery: CallbackQuery) => {
   const message = callbackQuery.message!;
   const chatId = message.chat.id;
   const data = callbackQuery.data;
-  choices.set(chatId, {
-    role: data,
-    platform: undefined,
-  });
+  console.log(chatId, data);
 
-  if (Object.values(CALLBACKS.data.role).includes(data as ROLE)) {
+  if (Object.values(CALLBACKS.data.role).includes(data as string)) {
+    choices.set(chatId, {
+      role: data,
+      platform: undefined,
+    });
+    role = choices.get(chatId)?.role || "";
+
     const opts = PLATFORM_BUTTONS;
     await bot.sendMessage(chatId, MESSAGES.choose.platform, opts);
   } else {
+    choices.set(chatId, {
+      role: role,
+      platform: data,
+    });
     await bot.sendMessage(
       chatId,
       `Role: ${choices.get(chatId)?.role}. Platform: ${
@@ -45,6 +57,7 @@ bot.on("callback_query", async (callbackQuery: CallbackQuery) => {
       }`
     );
   }
+  console.log(choices);
 });
 
 bot.on("polling_error", (error) => {
