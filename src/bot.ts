@@ -2,7 +2,7 @@ import dotenv from "dotenv";
 import TelegramBot, { Message, CallbackQuery } from "node-telegram-bot-api";
 
 import { MESSAGES } from "./utils/messages";
-import { isLevel, isPlatform, isRole } from "./utils/constants";
+import { CALLBACKS, isLevel, isPlatform, isRole } from "./utils/constants";
 import { ROLE_BUTTONS, PLATFORM_BUTTONS } from "./utils/buttons";
 
 dotenv.config();
@@ -45,7 +45,13 @@ bot.on("callback_query", async (callbackQuery: CallbackQuery) => {
       userState.level = data;
       userStates.set(chatId, userState);
     }
-    if (userState.role && userState.level) {
+
+    if (
+      userState.role &&
+      userState.level &&
+      !isPlatform(data) &&
+      data !== CALLBACKS.data.back.toRoles
+    ) {
       const opts = PLATFORM_BUTTONS;
       await bot.sendMessage(chatId, MESSAGES.choose.platform, opts);
     }
@@ -58,6 +64,15 @@ bot.on("callback_query", async (callbackQuery: CallbackQuery) => {
         chatId,
         `Role: ${userState.role}, Level: ${userState.level}, Platform: ${userState.platform}`
       );
+    }
+
+    if (data === CALLBACKS.data.back.toRoles) {
+      userState.role = "";
+      userState.level = "";
+      userStates.set(chatId, userState);
+      const opts = ROLE_BUTTONS;
+      await bot.sendMessage(chatId, MESSAGES.choose.role, opts);
+      return;
     }
   }
   console.log(userStates);

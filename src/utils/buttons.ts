@@ -37,3 +37,8 @@ export const ROLE_BUTTONS = createButtonsRows([
 ]);
 
 export const PLATFORM_BUTTONS = createButtons(BUTTONS_PARAMS.platform);
+
+export const BACK_BUTTON = {
+  text: "Back",
+  callback_data: CALLBACKS.data.back.toRoles,
+};

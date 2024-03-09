@@ -3,7 +3,7 @@ export const MESSAGES = {
     role: "Please choose a role:",
     platform: "Please choose platform:",
   },
-  back: { toRoles: "◀ Back to roles" },
+  back: { toRoles: "Back to roles" },
   success: {
     running: "Bot is successfully running...",
   },
