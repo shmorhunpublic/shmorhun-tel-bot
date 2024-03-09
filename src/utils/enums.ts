@@ -1,7 +1,17 @@
+export enum BUTTONS {
+  START = "/start",
+}
+
 export enum ROLE {
   DEVOPS = "DevOps",
   BACKEND = "Backend",
   FRONTEND = "Frontend",
+}
+
+export enum LEVEL {
+  JUNIOR = "Junior",
+  MIDDLE = "Middle",
+  SENIOR = "Senior",
 }
 
 export enum PLATFORM {
