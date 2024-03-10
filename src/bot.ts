@@ -76,7 +76,16 @@ bot.on("callback_query", async (callbackQuery: CallbackQuery) => {
           userState.role,
           userState.level
         );
-        await bot.sendMessage(chatId, vacanciesMessage);
+        if (vacanciesMessage.trim().length > 0) {
+          await bot.sendMessage(chatId, vacanciesMessage, {
+            parse_mode: "Markdown",
+          });
+        } else {
+          await bot.sendMessage(
+            chatId,
+            "No vacancies were found matching your request."
+          );
+        }
       } else {
         await bot.sendMessage(
           chatId,
